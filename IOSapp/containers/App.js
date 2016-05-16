@@ -2,6 +2,7 @@
 
 import ThemeColor from '../style/ColorTheme';
 import MessageList from './MessageList';
+import FindFriend from './FindFriend';
 
 var React = require('react-native');
 var {
@@ -10,6 +11,7 @@ var {
   View,
   TabBarIOS,
   NavigatorIOS,
+  Component,
   TouchableOpacity,
 } = React;
 
@@ -41,19 +43,24 @@ var ColoredView = React.createClass({
   }
 });
 
-var App = React.createClass({
-  getInitialState: function() {
-    return {
-      selectedTab: 'home',
-    };
-  },
+class App extends Component {
+  state = {
+    selectedTab: 'home',
+  };
 
-  componentWillMount: function() {
+  componentWillMount() {
     // https://github.com/facebook/react-native/issues/1403 prevents this to work for initial load
-    Icon.getImageSource('ios-gear', 30).then((source) => this.setState({ gearIcon: source }));
-  },
+    Icon.getImageSource('plus-round', 25).then((source) => this.setState({ gearIcon: source }));
+  }
 
-  _renderContent: function(color: string, pageText: string) {
+  handleAddFriend = () => {
+    this.refs.nav.push({
+      component: FindFriend,
+      title: '好友搜索',
+    });
+  };
+
+  _renderContent = (color: string, pageText: string) => {
     if(!this.state.gearIcon) {
       return false;
     }
@@ -64,6 +71,7 @@ var App = React.createClass({
     return (
       <NavigatorIOS
         style={styles.navigator}
+        ref="nav"
         barTintColor="#232323"
         titleTextColor="#fff"
         tintColor="#fff"
@@ -73,12 +81,13 @@ var App = React.createClass({
           passProps: props,
           title: pageText,
           rightButtonIcon: this.state.gearIcon,
+          onRightButtonPress: this.handleAddFriend,
         }}
       />
     );
-  },
+  };
 
-  render: function() {
+  render() {
     return (
       <TabBarIOS
         tintColor={ThemeColor.primaryColor}
@@ -134,7 +143,7 @@ var App = React.createClass({
       </TabBarIOS>
     );
   }
-});
+};
 
 var styles = StyleSheet.create({
   navigator: {

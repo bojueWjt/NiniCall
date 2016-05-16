@@ -11,7 +11,6 @@ import io from 'socket.io-client/socket.io';
 const {
   AppRegistry,
   Component,
-  NavigatorIOS,
   StyleSheet,
 } = React;
 

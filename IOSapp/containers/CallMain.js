@@ -10,8 +10,6 @@ const {
   StyleSheet,
 } = React;
 
-const str = 'hello world!';
-
 class CallMain extends Component {
 
   state = {
@@ -24,9 +22,6 @@ class CallMain extends Component {
     const _this = this;
     socket.on('message', function(data) {
       _this.handleGetMessage(data.content);
-    });
-    socket.emit('message',{
-      content: 'hello socket.io',
     });
   }
 
