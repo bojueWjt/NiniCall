@@ -79,6 +79,9 @@ class Login extends Component {
   };
 
   render() {
+    const {
+      handleToRegister,
+    } = this.props;
     return (
       <ScrollView>
         <View style={styles.container}>
@@ -104,7 +107,7 @@ class Login extends Component {
           </View>
           <View style={{ alignItems: 'center' }}>
             <View style={styles.ALinkGroup}>
-              <ALink text="注册" style={{ marginRight: 20 }} handlePress={this._handleRegisterPress} />
+              <ALink text="注册" style={{ marginRight: 20 }} handlePress={handleToRegister} />
               <ALink text="忘记密码" />
             </View>
           </View>

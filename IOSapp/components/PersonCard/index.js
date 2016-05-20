@@ -13,13 +13,17 @@ const {
   StyleSheet,
 } = React;
 
+const containerStyle = {
+  height: 80,
+};
+
 class PersonCard extends Component {
 
   render() {
     const {
       personInfo,
-      btnPressHandle,
-    } = this.props;
+      handlePress,
+    } = this.props
     const content = (
       [
         (<View style={{ flex: 1 }} >
@@ -32,17 +36,19 @@ class PersonCard extends Component {
         (
           <View style={styles.messageInfo}>
             <Text style={styles.personName}>{ personInfo.username }</Text>
-            <Button
-              onPress={btnPressHandle}
-              text="加为好友"
-            />
+            <Text style={styles.phoneNum}>电话号码: {personInfo.phoneNum}</Text>
+            <Text style={styles.ninicall}>昵称: {personInfo.username}</Text>
           </View>
         )
       ]
     );
     return (
       <View>
-        <TouchItem children={content}/>
+        <TouchItem
+          children={content}
+          containerStyle={containerStyle}
+          handlePress={handlePress}
+        />
       </View>
     );
   }
@@ -50,8 +56,8 @@ class PersonCard extends Component {
 
 const styles = StyleSheet.create({
   iconWrap: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
     marginTop: 10,
     marginLeft: 10,
     alignItems: 'center',
@@ -60,12 +66,24 @@ const styles = StyleSheet.create({
   },
   messageInfo: {
     flex: 4,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginLeft: 10,
     marginTop: 10,
   },
   personName: {
     fontSize: 14,
+    fontWeight: 'bold',
+  },
+  phoneNum: {
+    fontSize: 10,
+    lineHeight: 20,
+    color: ColorTheme.secondTextColor,
+  },
+  ninicall: {
+    fontSize: 10,
+    lineHeight: 20,
+    color: ColorTheme.secondTextColor,
   },
   lastMessage: {
     marginTop: 5,

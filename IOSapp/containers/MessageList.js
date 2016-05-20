@@ -1,5 +1,7 @@
 import React from 'react-native';
 import MessageItem from '../components/MessageItem';
+import Button from '../components/RButton';
+import { userStorage } from '../Storage';
 import CallMain from './CallMain';
 
 const {
@@ -22,6 +24,9 @@ class MessageList extends Component {
   });
  };
 
+  handleClear = () => {
+    userStorage.clear()
+  };
 
   render() {
     const { socket } = this.props;
@@ -31,6 +36,7 @@ class MessageList extends Component {
           socket={socket}
           handlePress={this._navigateToSubview}
         />
+        <Button text="clear all" handlePress={this.handleClear}/>
       </View>
     );
   }

@@ -1,5 +1,6 @@
 import React from 'react-native';
 import ColorTheme from '../../style/ColorTheme';
+import _ from 'lodash';
 
 const {
   Component,
@@ -8,8 +9,35 @@ const {
   StyleSheet,
 } = React;
 
+const styleConfig = {
+  container: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    backgroundColor: ColorTheme.background,
+    borderBottomWidth: 1,
+    borderColor: ColorTheme.borderColor,
+    height: 60,
+  },
+};
+
 class TouchItem extends Component {
 
+  getContainerStyle = () => {
+    const {
+      containerStyle,
+    } = this.props
+
+    let mixContainer = {};
+
+    if (containerStyle) {
+      mixContainer = _.merge({}, styleConfig.container, containerStyle);
+    } else {
+      mixContainer = styleConfig.container;
+    }
+    return StyleSheet.create({
+      container: mixContainer
+    });
+  };
   // add key for each child node
   renderChildren = () => {
     const { children } = this.props;
@@ -20,6 +48,7 @@ class TouchItem extends Component {
 
   render() {
     const { handlePress } = this.props;
+    const styles = this.getContainerStyle();
     return (
       <TouchableHighlight onPress={handlePress}>
         <View style={styles.container}>
@@ -31,18 +60,6 @@ class TouchItem extends Component {
     );
   }
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    backgroundColor: ColorTheme.background,
-    borderBottomWidth: 1,
-    borderColor: ColorTheme.borderColor,
-    height: 60,
-  },
-});
 
 export default TouchItem;
 

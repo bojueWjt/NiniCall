@@ -2,7 +2,7 @@ import React from 'react-native';
 import SearchInput from '../components/SearchInput';
 import { userFetch } from '../Fetch';
 import PersonCard from '../components/PersonCard';
-import { userStorage } from '../../IOSapp/Storage';
+import PersonHome from './PersonHome';
 
 const {
   Component,
@@ -37,8 +37,19 @@ class FindFriend extends Component {
     }
   };
 
-  _handleAddFriend = () => {
-    userStorage.getUserId();
+  _handleToPersonHome = () => {
+    const {
+      personInfo,
+    } = this.state;
+    const props = {
+      personInfo: personInfo,
+    };
+
+    this.props.navigator.push({
+      component: PersonHome,
+      title: personInfo.username,
+      passProps: props
+    })
   };
 
   render() {
@@ -53,7 +64,7 @@ class FindFriend extends Component {
           {
             personInfo ? <PersonCard
               personInfo={personInfo}
-              btnPressHandle={this._handleAddFriend}
+              handlePress={this._handleToPersonHome}
             /> : <Text>没有这个人</Text>
           }
           {

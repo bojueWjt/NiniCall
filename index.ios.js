@@ -1,5 +1,6 @@
 import React from 'react-native';
 import Login from './IOSapp/containers/login';
+import Guide from './IOSapp/containers/Guide';
 import { userStorage } from './IOSapp/Storage';
 import ThemeColor from './IOSapp/style/ColorTheme';
 import App from './IOSapp/containers/App';
@@ -23,6 +24,7 @@ class NiniCall extends Component {
   };
 
   componentDidMount() {
+    // 保存登录状态
     userStorage.getUserId(this.keepLogin)
   }
 
@@ -44,13 +46,9 @@ class NiniCall extends Component {
   render() {
     const { isLogin } = this.state;
     return (
-        isLogin?<App socket={this.socket}/> : <Login
+        isLogin?<App socket={this.socket}/> : <Guide
           style={[{ flex: 1 }, styles.wrapStyle]}
           handleLoginSuccess={this.handleLoginSuccess}
-          barTintColor="#232323"
-          titleTextColor="#fff"
-          tintColor="#fff"
-          translucent={false}
           itemWrapperStyle={styles.wrapStyle}
         />
     );

@@ -18,8 +18,11 @@ const getUserId = function(cb) {
   AsyncStorage.getItem('id', cb)
 };
 
+const clear = AsyncStorage.clear;
+
 export const userStorage = {
   saveUserInfo,
   getUserInfo,
   getUserId,
+  clear,
 };

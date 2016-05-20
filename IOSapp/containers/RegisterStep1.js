@@ -43,9 +43,8 @@ class Register extends Component {
   };
 
   callBackCreateUser = (data) => {
-    const { navigator } = this.props;
     if (data.code === 0) {
-      navigator.pop();
+      this.props.handleToLogin();
     }
   };
 
@@ -89,7 +88,7 @@ class Register extends Component {
 
   render() {
     const { count, hasCode } = this.state;
-    const { isSubmit } = this.props;
+    const { isSubmit, handleToLogin } = this.props;
     console.log(isSubmit);
     return (
       <ScrollView>
@@ -113,18 +112,25 @@ class Register extends Component {
         <Input
           placeholder="请输入昵称"
           handleChange={this._handleNiCallChange}
-          icon="code"
+          icon="nicheng"
         />
         <Input
           placeholder="请输入密码"
           handleChange={this.handlePasswordChange}
-          icon="code"
+          icon="password"
         />
 
-        <Button
-          text="注册"
-          handlePress={this._handlePressCreateUser}
-        />
+        <View style={styles.buttonGroup}>
+          <Button
+            text="注册"
+            handlePress={this._handlePressCreateUser}
+          />
+          <Button
+            text="返回登录页"
+            handlePress={handleToLogin}
+          />
+        </View>
+
 
       </ScrollView>
     );
@@ -132,7 +138,11 @@ class Register extends Component {
 }
 
 const styles = StyleSheet.create({
-
+  buttonGroup: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default Register;

@@ -7,4 +7,6 @@ export default {
   inputTextColor: '#cacaca',
   borderColor: '#ccc',
   primaryColor: '#26759D',
+  primaryTextColor: '#26759D',
+  secondTextColor: '#888'
 }

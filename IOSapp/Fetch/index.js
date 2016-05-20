@@ -54,10 +54,11 @@ const findOneUser = (phoneNum, callBack) => {
   }).done();
 };
 
-const addFriend = (phoneNum, personId) => {
+const addFriend = (phoneNum, currentUserId, friendId, callBack) => {
   let params = {
     phoneNum,
-    personId,
+    currentUserId,
+    friendId,
   };
 
   fetch(`${baseURL}/user/addFriend`, {
@@ -83,4 +84,5 @@ export const userFetch = {
   createUser,
   signin,
   findOneUser,
+  addFriend,
 };
