@@ -1,8 +1,11 @@
 'use strict';
 
-import ThemeColor from '../style/ColorTheme';
+import ColorTheme from '../style/ColorTheme';
 import MessageList from './MessageList';
 import FindFriend from './FindFriend';
+import FriendsList from './FriendsList';
+import UserHome from './UserHome';
+import Setting from './Setting';
 
 var React = require('react-native');
 var {
@@ -45,7 +48,7 @@ var ColoredView = React.createClass({
 
 class App extends Component {
   state = {
-    selectedTab: 'home',
+    selectedTab: 'NiniCall',
   };
 
   componentWillMount() {
@@ -60,6 +63,19 @@ class App extends Component {
     });
   };
 
+  _renderSelectedComponent = (pageText) => {
+    switch (pageText) {
+      case 'NiniCall':
+        return MessageList;
+      case '好友列表':
+        return FriendsList;
+      case '个人':
+        return UserHome;
+      default:
+        return Setting;
+    }
+  };
+
   _renderContent = (color: string, pageText: string) => {
     if(!this.state.gearIcon) {
       return false;
@@ -67,21 +83,20 @@ class App extends Component {
     const {
       socket,
     } = this.props;
-    var props = { color, pageText, socket };
+    const props = { color, pageText, socket };
     return (
       <NavigatorIOS
         style={styles.navigator}
         ref="nav"
-        barTintColor="#232323"
+        barTintColor={ColorTheme.barBackground}
+        itemWrapperStyle={styles.pageBackgroundStyle}
         titleTextColor="#fff"
         tintColor="#fff"
         translucent={false}
         initialRoute={{
-          component: ColoredView,
+          component: this._renderSelectedComponent(pageText),
           passProps: props,
           title: pageText,
-          rightButtonIcon: this.state.gearIcon,
-          onRightButtonPress: this.handleAddFriend,
         }}
       />
     );
@@ -90,55 +105,55 @@ class App extends Component {
   render() {
     return (
       <TabBarIOS
-        tintColor={ThemeColor.primaryColor}
-        barTintColor={ThemeColor.highTextColor}>
+        tintColor={ColorTheme.primaryColor}
+        barTintColor={ColorTheme.highTextColor}>
         <Icon.TabBarItemIOS
-          title="Home"
+          title="NiniCall"
           iconName="ios-home-outline"
           selectedIconName="ios-home"
-          selected={this.state.selectedTab === 'home'}
+          selected={this.state.selectedTab === 'NiniCall'}
           onPress={() => {
             this.setState({
-              selectedTab: 'home',
+              selectedTab: 'NiniCall',
             });
           }}>
-          {this._renderContent('#414A8C', 'Home')}
+          {this._renderContent('#414A8C', 'NiniCall')}
         </Icon.TabBarItemIOS>
         <Icon.TabBarItemIOS
-          title="Profile"
+          title="好友列表"
           iconName="ios-person-outline"
           selectedIconName="ios-person"
-          selected={this.state.selectedTab === 'profile'}
+          selected={this.state.selectedTab === '好友列表'}
           onPress={() => {
             this.setState({
-              selectedTab: 'profile',
+              selectedTab: '好友列表',
             });
           }}>
-          {this._renderContent('#090', 'Profile')}
+          {this._renderContent('#090', '好友列表')}
         </Icon.TabBarItemIOS>
         <Icon.TabBarItemIOS
-          title="Starred"
+          title="个人"
           iconName="ios-star-outline"
           selectedIconName="ios-star"
-          selected={this.state.selectedTab === 'starred'}
+          selected={this.state.selectedTab === '个人'}
           onPress={() => {
             this.setState({
-              selectedTab: 'starred',
+              selectedTab: '个人',
             });
           }}>
-          {this._renderContent('#900', 'Starred')}
+          {this._renderContent('#900', '个人')}
         </Icon.TabBarItemIOS>
         <Icon.TabBarItemIOS
-          title="Settings"
+          title="设置"
           iconName="ios-gear-outline"
           selectedIconName="ios-gear"
-          selected={this.state.selectedTab === 'settings'}
+          selected={this.state.selectedTab === '设置'}
           onPress={() => {
             this.setState({
-              selectedTab: 'settings',
+              selectedTab: '设置',
             });
           }}>
-          {this._renderContent('#009', 'Settings')}
+          {this._renderContent('#009', '设置')}
         </Icon.TabBarItemIOS>
       </TabBarIOS>
     );
@@ -148,7 +163,7 @@ class App extends Component {
 var styles = StyleSheet.create({
   navigator: {
     flex: 1,
-    backgroundColor: ThemeColor.background,
+    backgroundColor: ColorTheme.background,
   },
   container: {
     flex: 1,
@@ -170,6 +185,9 @@ var styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 4,
   },
+  pageBackgroundStyle: {
+    backgroundColor: ColorTheme.background,
+  }
 });
 
 export default App;

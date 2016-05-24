@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   messageItem: {
     flexDirection: 'row',
     borderTopWidth: 1,
-    backgroundColor: ColorTheme.background,
+    backgroundColor: ColorTheme.highTextColor,
     borderBottomWidth: 1,
     borderColor: ColorTheme.borderColor,
     height: 60,

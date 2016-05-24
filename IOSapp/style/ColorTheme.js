@@ -8,5 +8,7 @@ export default {
   borderColor: '#ccc',
   primaryColor: '#26759D',
   primaryTextColor: '#26759D',
-  secondTextColor: '#888'
+  secondTextColor: '#888',
+  originColor: '#D49620',
+  greenColor: '#33980C',
 }

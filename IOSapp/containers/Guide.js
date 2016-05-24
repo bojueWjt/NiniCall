@@ -40,7 +40,6 @@ class Guide extends Component {
         handleToLogin={this.handleToLogin}
       />);
     }
-    console.log(showPage);
     return (
       showPage
     );

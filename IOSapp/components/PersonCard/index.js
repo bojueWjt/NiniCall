@@ -2,7 +2,6 @@ import React from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ColorTheme from '../../style/ColorTheme';
 import TouchItem from '../TouchItem';
-import Button from '../RButton';
 
 var myIcon = (<Icon name="person" size={30} color={ColorTheme.barBackground} />);
 

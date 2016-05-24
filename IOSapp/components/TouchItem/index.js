@@ -13,8 +13,7 @@ const styleConfig = {
   container: {
     flexDirection: 'row',
     borderTopWidth: 1,
-    backgroundColor: ColorTheme.background,
-    borderBottomWidth: 1,
+    backgroundColor: ColorTheme.highTextColor,
     borderColor: ColorTheme.borderColor,
     height: 60,
   },

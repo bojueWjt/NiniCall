@@ -31,11 +31,13 @@ class MoreUserInfo extends Component {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
+    flex: 1,
   },
   contentStyle: {
-    flexDirection: 'column',
+    flex: 1,
   },
   infoStyle: {
+    fontSize: 14,
     lineHeight: 20,
   }
 });
