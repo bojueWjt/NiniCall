@@ -46,10 +46,11 @@ class Login extends Component {
 
     const { navigator } = this.props;
     if (data.code === 0) {
-      userStorage.saveUserInfo(data.user, (err) => console.log(err));
+      userStorage.saveUserInfo(data.user);
+      userStorage.saveFriends(data.user.friends);
       userStorage.getUserInfo((arr) => console.log(arr));
       userStorage.getUserId((err, id) => {console.log(id)});
-      this.props.handleLoginSuccess();
+      this.props.handleLoginSuccess(data.user);
     } else {
       Alert.alert('错误消息', data.errorMessage);
     }
@@ -120,7 +121,6 @@ var styles = StyleSheet.create({
   container: {
     marginTop: 50,
     flex: 1,
-    backgroundColor: Theme.background,
   },
   ALinkGroup: {
     flexDirection: 'row',

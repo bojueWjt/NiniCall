@@ -15,12 +15,18 @@ class SearchInput extends Component {
     const {
       handleChangeText,
       onSubmitEditing,
+      onFocus,
+      autoFocus,
+      onBlur
     } = this.props;
     return (
       <View style={styles.container}>
         <TextInput
           style={styles.input}
+          onBlur={onBlur}
           blurOnSubmit={false}
+          onFocus={onFocus}
+          autoFocus={autoFocus}
           onChangeText={handleChangeText}
           onSubmitEditing={onSubmitEditing}
           autoCapitalize="none"

@@ -4,10 +4,6 @@ import Guide from './IOSapp/containers/Guide';
 import { userStorage } from './IOSapp/Storage';
 import ThemeColor from './IOSapp/style/ColorTheme';
 import App from './IOSapp/containers/App';
-import './UserAgent';
-
-import io from 'socket.io-client/socket.io';
-
 
 const {
   AppRegistry,
@@ -17,36 +13,39 @@ const {
 
 class NiniCall extends Component {
 
-  socket = io('localhost:3000', {jsonp: false});
-
   state = {
     isLogin: false,
   };
 
-  componentDidMount() {
+  componentWillMount() {
     // 保存登录状态
     userStorage.getUserId(this.keepLogin)
   }
 
   keepLogin = (err, id) => {
-    console.log(id);
     if (id) {
       this.setState({
         isLogin: true,
+        userId: id
       });
     }
   };
 
-  handleLoginSuccess = () => {
+  handleLoginSuccess = (userInfo) => {
     this.setState({
       isLogin: true,
+      userInfo: userInfo,
+      userId: userInfo._id,
     });
   };
 
   render() {
-    const { isLogin } = this.state;
+    const { isLogin, userId, userInfo } = this.state;
     return (
-        isLogin?<App socket={this.socket}/> : <Guide
+        isLogin?<App
+          userId={userId}
+          userInfo={userInfo}
+        /> : <Guide
           style={[{ flex: 1 }, styles.wrapStyle]}
           handleLoginSuccess={this.handleLoginSuccess}
           itemWrapperStyle={styles.wrapStyle}

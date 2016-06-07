@@ -13,8 +13,8 @@ const {
 
 class MessageBox extends Component {
   render() {
-    const { message } = this.props;
-    return (
+    const { message, isSelf } = this.props;
+    const friendMessage = (
       <View>
         <View style={styles.messageItem}>
           <View style={{ flex: 1 }} >
@@ -32,6 +32,31 @@ class MessageBox extends Component {
         </View>
       </View>
     );
+
+    const selfMessage = (
+      <View>
+        <View style={styles.messageItem}>
+          <View style={styles.messageInfo}>
+            <View style={styles.selfMessageTextWrap}>
+              <Text style={styles.selfMessageText}>{message}</Text>
+            </View>
+          </View>
+          <View style={{ flex: 1 }} >
+            <View style={styles.iconWrap}>
+              {
+                myIcon
+              }
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+
+    if (!isSelf) {
+      return selfMessage;
+    }
+
+    return friendMessage;
   }
 }
 
@@ -64,6 +89,18 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     marginRight: 20,
     borderColor: ColorTheme.borderColor,
+  },
+  selfMessageText: {
+    fontSize: 14,
+    color: ColorTheme.barBackground,
+  },
+  selfMessageTextWrap: {
+    backgroundColor: ColorTheme.highTextColor,
+    padding: 5,
+    borderWidth: 0.5,
+    marginLeft: 20,
+    borderColor: ColorTheme.borderColor,
+    justifyContent: 'flex-end',
   }
 });
 

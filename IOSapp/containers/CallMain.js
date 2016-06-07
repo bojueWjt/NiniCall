@@ -1,5 +1,6 @@
 import React from 'react-native';
 import MessageInput from '../components/MessageInput';
+import { userStorage } from '../Storage';
 import MessageBox from '../components/MessageBox';
 
 const {
@@ -13,38 +14,67 @@ const {
 class CallMain extends Component {
 
   state = {
-    messages: [],
     currentInputText: '',
+    chatList: {},
   };
 
-  componentWillMount() {
-    const { socket } = this.props;
+  constructor(props) {
+    super(props);
+    const {
+      socket,
+      chatInfo,
+    } = this.props;
+
+    this.state = {
+      chatInfo: chatInfo,
+    };
+
     const _this = this;
-    socket.on('message', function(data) {
-      _this.handleGetMessage(data.content);
-    });
-  }
 
-  handleGetMessage = (message) => {
-    const { messages } = this.state;
-    messages.push(message);
-    this.setState({
-      messages,
-    });
-  };
+    socket.on('chat message', function(data) {
+      const newChatInfo = _.merge({}, chatInfo);
+      if (chatInfo.id = data.from) {
+        newChatInfo.chatMessages.push({
+          content: data.content,
+          type: 'from',
+        });
+
+        _this.setState({
+          chatInfo: newChatInfo,
+        });
+      }
+    })
+  }
 
   _handleSubmitEditing = () => {
     const {
-      currentInputText
+      currentInputText,
+      chatInfo,
     } = this.state;
     const {
       socket,
+      personInfo,
     } = this.props;
 
-    socket.emit('message', {
+    socket.emit('chat message', {
+      from: personInfo._id,
+      to: chatInfo.id,
       content: currentInputText,
     });
 
+    console.log('emit chat message _---------');
+
+    const content = {
+      type: 'to',
+      content: currentInputText,
+    };
+
+    const newChatMessages = _.merge({}, chatInfo);
+    newChatMessages.chatMessages.push(content);
+
+    this.setState({
+      chatInfo: newChatMessages,
+    }, this.saveChatInfo)
   };
 
   _handleChangeText = (value) => {
@@ -53,14 +83,26 @@ class CallMain extends Component {
     })
   };
 
+  saveChatInfo = () => {
+    const {
+      chatInfo,
+    } = this.state;
+
+    userStorage.saveChatList(chatInfo);
+  };
+
   renderMessageBox = () => {
-    const { messages } = this.state;
-    return messages.map((item, index) => {
+    const {
+      chatInfo: {
+        chatMessages
+      },
+    } = this.state;
+    return chatMessages.map((item, index) => {
       return (
         <MessageBox
           key={index}
-          message={item}
-
+          message={item.content}
+          isSelf={item.type === 'from'}
         />
       );
     })
@@ -70,7 +112,6 @@ class CallMain extends Component {
     return (
     <ScrollView style={styles.container}>
       <View style={{ flex: 1 }}>
-        <Text>niniCaoo</Text>
         {
           this.renderMessageBox()
         }

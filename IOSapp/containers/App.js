@@ -2,10 +2,11 @@
 
 import ColorTheme from '../style/ColorTheme';
 import MessageList from './MessageList';
-import FindFriend from './FindFriend';
+import { userStorage } from '../Storage'
 import FriendsList from './FriendsList';
 import UserHome from './UserHome';
 import Setting from './Setting';
+import Socket from '../Socket';
 
 var React = require('react-native');
 var {
@@ -24,6 +25,7 @@ var ColoredView = React.createClass({
   componentWillMount: function() {
     Icon.getImageSource('android-arrow-back', 30).then((source) => this.setState({ backIcon: source }));
   },
+
   _navigateToSubview: function() {
     this.props.navigator.push({
       component: ColoredView,
@@ -47,19 +49,56 @@ var ColoredView = React.createClass({
 });
 
 class App extends Component {
+
+
   state = {
     selectedTab: 'NiniCall',
+    friendRequestNum: 0,
+    chatNum: 0,
   };
 
   componentWillMount() {
     // https://github.com/facebook/react-native/issues/1403 prevents this to work for initial load
+    const {
+      userId
+    } = this.props;
+
+    const mySocket = Socket.bind(this);
+    mySocket(userId);
+
     Icon.getImageSource('plus-round', 25).then((source) => this.setState({ gearIcon: source }));
   }
 
-  handleAddFriend = () => {
-    this.refs.nav.push({
-      component: FindFriend,
-      title: '好友搜索',
+
+  addNewChat = (chat) => {
+    const {
+      chatList
+    } = this.state;
+    const newChatList = _.merge({}, chatList);
+    newChatList[chat.id] = chat;
+    this.setState({
+      chatList: newChatList,
+    });
+
+  };
+
+  handlePushChatMessage = (sendMessageInfo) => {
+    const chatList = _.merge({}, this.state.chatList);
+    chatList[sendMessageInfo.id].chatMessages.push({
+      content: sendMessageInfo.content,
+      type: 'to',
+    });
+  };
+
+  handleClearFriendRequestNum = () => {
+    this.setState({
+      friendRequestNum: 0,
+    })
+  };
+
+  handleClearChatNum = (num) => {
+    this.setState({
+      chatNum: this.state.chatNum - num,
     });
   };
 
@@ -80,35 +119,56 @@ class App extends Component {
     if(!this.state.gearIcon) {
       return false;
     }
+
     const {
       socket,
-    } = this.props;
-    const props = { color, pageText, socket };
-    return (
-      <NavigatorIOS
-        style={styles.navigator}
-        ref="nav"
-        barTintColor={ColorTheme.barBackground}
-        itemWrapperStyle={styles.pageBackgroundStyle}
-        titleTextColor="#fff"
-        tintColor="#fff"
-        translucent={false}
-        initialRoute={{
+      chatList,
+      chatSocket,
+      friendRequestNum,
+    } = this.state;
+    const props = {
+      color,
+      chatList: chatList,
+      pageText,
+      socket,
+      chatSocket,
+      handleClearChatNum: this.handleClearChatNum,
+      handlePushChatMessage: this.handlePushChatMessage,
+      friendRequestNum: friendRequestNum,
+      handleClearFriendRequestNum: this.handleClearFriendRequestNum,
+      addNewChat: this.addNewChat
+    };
+
+
+    return (<NavigatorIOS
+      style={styles.navigator}
+      ref="nav"
+      barTintColor={ColorTheme.barBackground}
+      itemWrapperStyle={styles.pageBackgroundStyle}
+      titleTextColor="#fff"
+      tintColor="#fff"
+      translucent={false}
+      initialRoute={{
           component: this._renderSelectedComponent(pageText),
-          passProps: props,
+          passProps: _.merge({}, props),
           title: pageText,
         }}
-      />
-    );
+    />);
   };
 
   render() {
+    const {
+      friendRequestNum,
+      chatNum
+    } = this.state;
+    console.log(chatNum);
     return (
       <TabBarIOS
         tintColor={ColorTheme.primaryColor}
         barTintColor={ColorTheme.highTextColor}>
         <Icon.TabBarItemIOS
           title="NiniCall"
+          badge={ chatNum === 0 ? null : chatNum }
           iconName="ios-home-outline"
           selectedIconName="ios-home"
           selected={this.state.selectedTab === 'NiniCall'}
@@ -121,6 +181,7 @@ class App extends Component {
         </Icon.TabBarItemIOS>
         <Icon.TabBarItemIOS
           title="好友列表"
+          badge={ friendRequestNum === 0 ? null : friendRequestNum }
           iconName="ios-person-outline"
           selectedIconName="ios-person"
           selected={this.state.selectedTab === '好友列表'}

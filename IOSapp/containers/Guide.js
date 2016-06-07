@@ -29,7 +29,6 @@ class Guide extends Component {
       isLogin,
     } = this.state;
     let showPage = '';
-    console.log(isLogin);
     if (isLogin) {
       showPage = (<Login
         {...this.props}

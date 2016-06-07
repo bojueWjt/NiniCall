@@ -16,7 +16,8 @@ class MessageBox extends Component {
 
 
   render() {
-    const { handlePress } = this.props;
+    const { handlePress, chatInfo } = this.props;
+    const lastMessage = chatInfo.chatMessages[chatInfo.chatMessages.length -1];
     return (
       <View>
         <TouchableHighlight onPress={handlePress}>
@@ -29,9 +30,15 @@ class MessageBox extends Component {
               </View>
             </View>
             <View style={styles.messageInfo}>
-              <Text style={styles.personName}>ninicoco</Text>
-              <Text style={styles.lastMessage}>不认识啊</Text>
+              <Text style={styles.personName}>{chatInfo.friendName}</Text>
+              <Text style={styles.lastMessage}>{lastMessage ? lastMessage.content : null}</Text>
             </View>
+            {
+              chatInfo.chatNum ? (<View style={styles.chatNum}>
+                <Text style={styles.chatText}>{chatInfo.chatNum}</Text>
+              </View>
+              ) : null
+            }
           </View>
         </TouchableHighlight>
       </View>
@@ -47,6 +54,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: ColorTheme.borderColor,
     height: 60,
+    position: 'relative',
   },
   iconWrap: {
     width: 40,
@@ -67,6 +75,22 @@ const styles = StyleSheet.create({
   lastMessage: {
     marginTop: 5,
   },
+  chatNum: {
+    position: 'absolute',
+    top: 5,
+    left: 5,
+    height: 20,
+    width: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
+    borderRadius: 20,
+  },
+  chatText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: ColorTheme.highTextColor
+  }
 });
 
 export default MessageBox;

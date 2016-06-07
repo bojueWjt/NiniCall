@@ -13,7 +13,23 @@ const {
 
 class Setting extends Component {
 
+  componentWillMount() {
+    userStorage.getUserInfo(this.getUserInfo);
+  }
+
+  getUserInfo = (err, userInfo) => {
+    this.setState({
+      personInfo: userInfo,
+    });
+  };
+
   handleClear = () => {
+    const {
+      socket,
+      chatSocket,
+    } = this.props;
+    socket.emit('disconnect');
+    chatSocket.emit('disconnect');
     userStorage.clear()
   };
 

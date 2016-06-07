@@ -41,6 +41,9 @@ class TouchItem extends Component {
   renderChildren = () => {
     const { children } = this.props;
     return children.map((item, index) => {
+      if (!item) {
+        return null;
+      }
       return Object.assign({}, item, { key: index });
     })
   };

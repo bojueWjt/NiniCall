@@ -26,6 +26,22 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 17,
   },
+  bubbleView: {
+    borderRadius: 25,
+    flex: 1,
+    backgroundColor: 'red',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+    marginBottom: 15,
+    marginLeft: 35,
+    marginRight: 10,
+    borderColor: 'red'
+  },
+  bubbleText: {
+    color: '#fff',
+  }
 });
 
 
@@ -39,11 +55,15 @@ const containerStyle = {
 
 class OptionMiddle extends Component {
 
+  componentWillReceiveProps(nextProps) {
+  }
+
   render() {
     const {
       text,
       optionIcon,
       handlePress,
+      friendRequestNum,
     } = this.props;
     const content = [
       (<View style={{ flex: 1 }} >
@@ -55,6 +75,12 @@ class OptionMiddle extends Component {
         <View style={styles.messageInfo}>
           <Text>{text}</Text>
         </View>
+      ),
+      (
+        friendRequestNum === 0 ? null :
+          (<View style={styles.bubbleView}>
+            <Text style={styles.bubbleText}>{friendRequestNum}</Text>
+          </View>)
       )
     ];
 

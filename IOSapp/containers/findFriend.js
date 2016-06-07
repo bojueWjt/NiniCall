@@ -1,8 +1,9 @@
 import React from 'react-native';
 import SearchInput from '../components/SearchInput';
-import { userFetch } from '../Fetch';
-import PersonCard from '../components/PersonCard';
-import PersonHome from './PersonHome';
+import SearchUser from '../components/SearchUser';
+import { userStorage } from '../Storage';
+import _ from 'lodash';
+import ContactItem from '../components/ContactItem';
 
 const {
   Component,
@@ -13,68 +14,116 @@ const {
 
 class FindFriend extends Component {
 
-  state = {
-    isInit: true,
-  };
+  componentDidMount() {
+    userStorage.getFriendRequest(this.getFriendRequest);
+  }
 
-  _handleFindOneUser = () => {
-    const { userPhoneNum } = this.state;
-    userFetch.findOneUser(userPhoneNum, this._handleGetUserInfo);
-  };
 
-  _handleChangeText = (value) => {
+  getFriendRequest = (err, friendRequest) => {
+    if (err) {
+      console.log(err)
+    }
+
+    console.log(friendRequest);
     this.setState({
-      userPhoneNum: value,
+      friendRequest: friendRequest,
     });
   };
 
-  _handleGetUserInfo = (response) => {
-    console.log(response);
-    if (response.code === 0) {
-      this.setState({
-        personInfo: response.user,
-      })
-    }
+  state = {
+    isNull: true,
   };
 
-  _handleToPersonHome = () => {
+  _handleToSearchUser = () => {
     const {
-      personInfo,
-    } = this.state;
-    const props = {
-      personInfo: personInfo,
+      socket
+    } = this.props;
+    const props ={
+      socket,
     };
-
     this.props.navigator.push({
-      component: PersonHome,
-      title: personInfo.username,
-      passProps: props
+      component: SearchUser,
+      passProps: props,
     })
   };
 
+  _handleChangeStatus = (id, status) => {
+    const {
+      friendRequest,
+    } = this.state;
+    friendRequest[id].status = status;
+
+    this.setState({
+      friendRequest,
+    });
+  };
+
+  renderFriendRequest = () => {
+    const {
+      friendRequest
+    } = this.state;
+
+    const requestList = [];
+
+    _.forIn(friendRequest, (value) => {
+      requestList.push(value);
+    });
+
+    const friendRequestNodes = this.renderRequestList(requestList);
+
+    return friendRequestNodes;
+  };
+
+  renderRequestList = (requestList) => {
+
+    if(requestList.length) {
+      return requestList.map((item, index) => {
+        return (
+          <ContactItem
+            key={index}
+            changeStatus={this._handleChangeStatus}
+            personInfo={item}
+            status={item.status}
+          />
+          );
+      });
+    }
+
+    return null;
+  };
+
   render() {
-    const { personInfo, isInit } = this.state;
+    const { isNull } = this.state;
+    const RequestList = this.renderFriendRequest();
     return (
       <View>
         <SearchInput
-          onSubmitEditing={this._handleFindOneUser}
-          handleChangeText={this._handleChangeText}
+          onFocus={this._handleToSearchUser}
         />
-        <View style={styles.content} >
-          {
-            personInfo ? <PersonCard
-              personInfo={personInfo}
-              handlePress={this._handleToPersonHome}
-            /> : <Text>没有这个人</Text>
-          }
-          {
-            isInit ? <Text>这里咩有东西</Text> : null
+          <View style={styles.content} >
+            {
+              isNull ? RequestList : <Text>暂无消息</Text>
           }
         </View>
       </View>
     );
   }
 }
+
+FindFriend.defaultProps = {
+  requestList: [{
+    username: 'ninico',
+    status: 1,
+  },
+    {
+      username: '张海明',
+      status: 2
+    },
+    {
+      username: '江锦泰',
+      status: 3,
+    }],
+};
 
 const styles = StyleSheet.create({
   content: {

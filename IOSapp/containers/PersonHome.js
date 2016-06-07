@@ -1,5 +1,6 @@
 import React from 'react-native';
 import PersonCard from '../components/PersonCard';
+import CallMain from './CallMain';
 import MoreUserInfo from '../components/MoreUserInfo';
 import { userStorage } from '../Storage'
 import { userFetch } from '../Fetch';
@@ -16,29 +17,40 @@ const {
 class PersonHome extends Component {
 
   componentDidMount() {
-    userStorage.getUserId(this.saveUserId);
+    userStorage.getUserInfo(this.saveUserId);
   }
 
-  saveUserId = (err, id) => {
+  saveUserId = (err, userInfo) => {
     if (err) {
       console.log(err);
     }
 
     this.setState({
-      currentUserId: id,
+      currentUserId: userInfo._id,
+      username: userInfo.username,
     });
   };
 
+  saveUserInfo = (err, userInfo) => {
+
+  };
+
   _handleCallBackAddFriend = (data) => {
+    const {
+      socket,
+    } = this.props;
+    const {
+      username
+    } = this.state;
     if (data.code === 0) {
+      socket.emit('new friend request', _.merge({}, { username: username}, data.friendRequest));
       this.props.navigator.pop();
     } else if(data.code > 0) {
-      Alert(data.errorMessage);
+      Alert.alert(data.errorMessage);
     }
   };
 
   _handleAddFriend = () => {
-    console.log('ninicococo');
     const {
       personInfo: {
         _id,
@@ -52,18 +64,56 @@ class PersonHome extends Component {
     userFetch.addFriend(phoneNum, currentUserId, _id, this._handleCallBackAddFriend);
   };
 
+  handleSendMessage = () => {
+    const {
+      socket,
+      handlePushChatMessage,
+      personInfo,
+      chatSocket,
+    } = this.props;
+
+    const {
+      currentUserId,
+    } = this.state;
+
+    const chatInfo = {
+      friendName: personInfo.username,
+      id: personInfo._id,
+      chatMessages: []
+    };
+
+    const props = {
+      personInfo: {
+        _id: currentUserId,
+      },
+      socket: chatSocket,
+      handlePushChatMessage: handlePushChatMessage,
+      chatInfo: chatInfo,
+    };
+
+    this.props.navigator.push({
+      title: personInfo.username,
+      component: CallMain,
+      passProps: props,
+    })
+  };
+
   render() {
-    const { personInfo } = this.props;
-    console.log(personInfo);
+    const { personInfo, isFriend } = this.props;
     return (
       <View>
         <PersonCard personInfo={personInfo} />
-        <MoreUserInfo />
+        <MoreUserInfo personInfo={personInfo}/>
         <View style={styles.buttonGroup}>
-          <Button
-            text="加为好友"
-            handlePress={this._handleAddFriend}
-          />
+          {
+            isFriend ?
+              <Button text="发送消息" handlePress={this.handleSendMessage} />
+            :<Button
+              text="加为好友"
+              handlePress={this._handleAddFriend}
+            />
+          }
+
         </View>
       </View>
     );

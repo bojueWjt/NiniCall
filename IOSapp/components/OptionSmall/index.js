@@ -18,7 +18,8 @@ class OptionSmall extends Component {
 
   render() {
     const {
-      text
+      text,
+      handlePress,
     } = this.props;
     const content = [
       <View style={styles.messageInfo}>
@@ -34,6 +35,7 @@ class OptionSmall extends Component {
       <TouchItem
         containerStyle={containerStyle}
         children={content}
+        handlePress={handlePress}
       />
     );
   }

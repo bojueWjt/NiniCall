@@ -11,4 +11,5 @@ export default {
   secondTextColor: '#888',
   originColor: '#D49620',
   greenColor: '#33980C',
+  errorColor: '#DE2929',
 }

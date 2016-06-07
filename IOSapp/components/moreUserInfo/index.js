@@ -11,11 +11,17 @@ const {
 class MoreUserInfo extends Component {
   
   render() {
+    const {
+      personInfo: {
+        local,
+        motto,
+      }
+    } = this.props;
     const content = [
       (
         <View style={styles.contentStyle}>
-          <Text style={styles.infoStyle}>地域: 广东 湛江</Text>
-          <Text style={styles.infoStyle}>个性签名: we all in the gutter, but some of us looking at stars.</Text>
+          <Text style={styles.infoStyle}>地域: { local ? local : '未填写'}</Text>
+          <Text style={styles.infoStyle}>个性签名: { motto ? motto : '未填写'}</Text>
         </View>
       )
     ];
